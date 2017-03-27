@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:context=".Register">
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/buttons_container"
+        android:id="@+id/signature_pad_container">
+
+        <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/holo_orange_dark"
+                android:layout_marginBottom="1dp"
+                android:layout_above="@+id/signature_pad_description" />
+
+        <TextView
+                android:id="@+id/signature_pad_description"
+                android:layout_width="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_orange_dark"
+                android:layout_marginBottom="1dp"
+                android:layout_alignParentBottom="true"
+                android:text="@string/agreement" />
+
+        <views.SignaturePad
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/signature_pad"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/buttons_container"
+        android:paddingTop="15dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@android:color/white"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+
+        android:layout_alignParentBottom="true">
+            <Button
+                android:id="@+id/btn_clear"
+                android:layout_marginLeft="5dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+
+                android:background="@android:color/holo_orange_dark"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_pad"
+                android:textColor="@android:color/white"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:enabled="false" />
+
+            <Button
+                android:id="@+id/btn_regiconfirm"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="40dp"
+
+                android:background="@android:color/holo_orange_dark"
+                android:layout_height="wrap_content"
+                android:text="@string/confirm"
+                android:textColor="@android:color/white"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:enabled="false" />
+    </LinearLayout>
+
+</RelativeLayout>
