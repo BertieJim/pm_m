@@ -269,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
         edit_token4.addTextChangedListener(automov_listen4);
         edit_token5.addTextChangedListener(automov_listen5);
 
-
         final android.app.AlertDialog dialog = customizeDialog.show();
 
         btn_cancel.setOnClickListener((new View.OnClickListener() {
@@ -305,10 +304,10 @@ public class MainActivity extends AppCompatActivity {
                     editor.putString("TOKEN",token);
                     editor.apply();
                     editor.commit() ;
-                    if(mService!=null)
+                    if(mService!=null&&gotoclass==Unlock.class)
                     {
                         //TODO:这里为测试传送sigs作了注释 测试后需要改回
-                        //mService.sendtokenMessage();
+                        mService.sendtokenMessage();
                     }
                     /*
                     String test = mySharedPreferences.getString("IP",null);

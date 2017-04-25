@@ -19,12 +19,15 @@ import pm_m.SignaturesOuterClass.Signatures;
 import pm_m.SignaturesOuterClass.Point;
 
 import java.lang.StringBuilder;
+import java.util.ArrayList;
+
 import views.SignaturePad;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
+import com.example.bertie.pm_m.Register;
 import com.example.bertie.pm_m.Unlock;
 import com.google.protobuf.ByteString;
 
@@ -73,6 +76,49 @@ public class SendMessage extends Service {
 
 
     }
+    public boolean sendRegisterMessage(final ArrayList mmrecords) {
+
+        new Thread(new Runnable() {
+            //TODO:加入线程池
+            @Override
+            public void run() {
+                ArrayList<SparseArray<SignaturePad.MotionEventRecorder>> mrecords = mmrecords;
+                SharedPreferences sp2 = getSharedPreferences("PCINFO", Activity.MODE_PRIVATE);
+                String ip = sp2.getString("IP", null);
+                String port = sp2.getString("PORT", null);
+                String token = sp2.getString("TOKEN", null);
+
+                Signatures.Builder sigsbuilder = Signatures.newBuilder();
+                sigsbuilder.setId(token); //pc端还要解析下 token 来看是不是该机器发送的信息。
+
+                for(int k=0;k<mrecords.size();k++)
+                {
+                    SparseArray<SignaturePad.MotionEventRecorder> records = mrecords.get(k);
+                    // read all records
+                    Signature.Builder sig_builder = Signature.newBuilder();
+                    for (int i = 0; i < records.size(); i++) {
+                        Point.Builder pbuilder = Point.newBuilder();
+                        pbuilder.setX(records.get(i).getX());
+                        pbuilder.setY(records.get(i).getY());
+                        pbuilder.setP(records.get(i).getZ());
+                        pbuilder.setT(records.get(i).getTime());
+//                        Log.d(TAG, String.valueOf(pbuilder.getX()));
+
+                        sig_builder.addPoints(pbuilder);
+                        //有一个错误 因为set错元素
+                    }
+                    sigsbuilder.addSignatures(sig_builder);//只有一个 因为这里是 解锁 调用的函数
+                }
+                Log.d(TAG, String.valueOf(mrecords.size()));
+
+                sendData(sigsbuilder.build(), ip, port,1);
+                //Log.d(TAG, records.toString());
+
+            }
+        }).start();
+
+        return true;
+    }
     public boolean sendSigMessage(final SparseArray<SignaturePad.MotionEventRecorder> records) {
         new Thread(new Runnable() {
             //TODO:加入线程池
@@ -96,9 +142,12 @@ public class SendMessage extends Service {
                     pbuilder.setP(records.get(i).getZ());
                     pbuilder.setT(records.get(i).getTime());
                     sig_builder.addPoints(pbuilder);
+                    //有一个错误 因为set错元素
+                    //Log.d(TAG, String.valueOf(pbuilder.getX()));
+
                 }
                 sigsbuilder.addSignatures(sig_builder);//只有一个 因为这里是 解锁 调用的函数
-                sendData(sigsbuilder.build(), ip, port);
+                sendData(sigsbuilder.build(), ip, port,0);
                 //Log.d(TAG, records.toString());
 
 
@@ -133,7 +182,7 @@ public class SendMessage extends Service {
         zcontext.term();
     }
 
-    private boolean sendData(Signatures sigs,String ip2,String port) {
+    private boolean sendData(Signatures sigs,String ip2,String port,int type) {
         // zmq
         ZMQ.Socket mRequest = zcontext.socket(ZMQ.REQ);
         // bind address
@@ -149,8 +198,16 @@ public class SendMessage extends Service {
 
         mRequest.send(sigs.toByteArray(), 0);
         Log.d(TAG, "All data sent!");
-
+        String sigback = mRequest.recvStr();
         mRequest.close();
+        if(type == 1)
+        {
+            Handler h = Register.handler2;
+            Message msg = new Message();
+            msg.what = 1;
+            Log.d(TAG, "sig send yes");
+            h.sendMessage(msg);
+        }
 
         return true;
     }

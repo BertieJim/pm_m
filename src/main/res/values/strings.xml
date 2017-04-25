@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">笔迹解锁</string>
     <string name="agreement">请在这里写下您的签名</string>
-    <string name="clear_pad">清除</string>
-    <string name="confirm">注册</string>
-    <string name="unlock">认证</string>
+    <string name="clear_pad">清 除</string>
+    <string name="confirm">注 册</string>
+    <string name="unlock">认 证</string>
 
     <string name="hand_writer_confirm_dialog_title">Please tell me who you are.</string>
 </resources>

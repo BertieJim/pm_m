@@ -11,6 +11,6 @@ message Signature {
 }
 
 message Signatures{
-    string id = 1;	            
+    string id = 1;
 	repeated Signature signatures = 2;
 }

@@ -18,11 +18,16 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import pm_m.SignaturesOuterClass;
 import service.SendMessage;
@@ -43,10 +48,11 @@ public class Unlock extends Activity {
     private Button btn_clear;
     private Button btn_confirm;
     public static MyHandler handler;
+    public int trytimes = 5;
     private SendMessage mService = null;
     public boolean iftokenright = false;
     private boolean mIsBound = false;
-    public int trytimes = 5;
+    private PopupMenu popupMenu = null;
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
             // This is called when the connection with the service has been
@@ -55,7 +61,6 @@ public class Unlock extends Activity {
             // service that we know is running in our own process, we can
             // cast its IBinder to a concrete class and directly access it.
             mService = ((SendMessage.LocalBinder) service).getService();
-
 
         }
 
@@ -115,6 +120,7 @@ public class Unlock extends Activity {
             @Override
             public void onClick(View view) {
                 sign_pad.clear();
+                sign_pad.getMotionEventRecord().clear();
             }
         });
 
@@ -122,7 +128,7 @@ public class Unlock extends Activity {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View view) {
-                SparseArray<SignaturePad.MotionEventRecorder> records = sign_pad.getMotionEventRecord();
+                SparseArray<SignaturePad.MotionEventRecorder> records = sign_pad.getMotionEventRecord().clone();
                 if (mService != null) {
                     mService.sendSigMessage(records);
                 }
@@ -139,13 +145,18 @@ public class Unlock extends Activity {
 //                }).start();
 
                 fullScreenDisplay();
-
+                Toast.makeText(Unlock.this,
+                        "发送成功",
+                        Toast.LENGTH_SHORT).show();
+                sign_pad.clearMotionEventRecord();
+                //发完就返回
+                finish();
 
             }
         });
         //TODO:这里为测试传送sigs作了注释 测试后需要改回
-        //btn_confirm.setText("等待");
-        //btn_confirm.setClickable(false);
+        btn_confirm.setText("等待");
+        btn_confirm.setClickable(false);
         //以下不是测试
 //        btn_confirm.setBackgroundColor(Color.parseColor("#FFAF14"));
 
@@ -197,49 +208,138 @@ public class Unlock extends Activity {
                 btn_confirm.setClickable(true);
 
                 Toast.makeText(Unlock.this,
-                        "SSSSSSS",
+                        "发送成功",
                         Toast.LENGTH_SHORT).show();
                 trytimes = 5;
 //                btn_confirm.setBackgroundColor(Color.parseColor("#FF7400"));
                 //refresh();
-            } else if(msg.what == 0) {
-                if((trytimes--)>0)
-                {
-                    String note = "错误的token，您还有"+String.valueOf(trytimes)+"次机会";
+            } else if (msg.what == 0) {
+                if ((trytimes--) > 0) {
+                    String note = "错误的token，您还有" + String.valueOf(trytimes) + "次机会";
                     Toast.makeText(Unlock.this,
                             note,
                             Toast.LENGTH_SHORT).show();
                     //TODO:这里为测试传送sigs作了注释 测试后需要改回
-                    //iftokenright = false;
-                    //finish();
-                }
-                else
-                {
+                    iftokenright = false;
+                    finish();
+                } else {
                     String note = "很抱歉,您总是输错token,我们建议5分钟后再尝试";
                     Toast.makeText(Unlock.this,
                             note,
                             Toast.LENGTH_SHORT).show();
                     //TODO:这里为测试传送sigs作了注释 测试后需要改回
-                    //Unlock.this.finish();
-                    //finish();
+                    Unlock.this.finish();
+                    finish();
                 }
             }
-            if(msg.what == 2&&iftokenright==false)
-            {
-                String note = "当前网络不通，您还有"+String.valueOf(trytimes)+"次机会";
+            if (msg.what == 2 && iftokenright == false) {
+                String note = "当前网络不通，您还有" + String.valueOf(trytimes) + "次机会";
                 Toast.makeText(Unlock.this,
                         note,
                         Toast.LENGTH_SHORT).show();
                 Log.d("sendmsg", "Gettttttthismsg2");
                 //TODO:这里为测试传送sigs作了注释 测试后需要改回
-                //finish();
+                finish();
 
             }
         }
 
     }
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void refresh() {
         onCreate(null);
+    }
+
+    //选项按钮
+    public void onOptionClicked(View view) {
+        if (popupMenu == null) {
+            popupMenu = new PopupMenu(this, view);
+
+            getMenuInflater().inflate(R.menu.popup_menu, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(
+                    new PopupMenu.OnMenuItemClickListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                        @Override
+                        public boolean onMenuItemClick(final MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.style_fu:
+                                    sign_pad.clear();
+                                    sign_pad.getMotionEventRecord().clear();
+                                    sign_pad.setPenstyle(1);
+                                    //可能没有这么简单 对比color
+                                    item.setChecked(true);
+
+
+                                    fullScreenDisplay();
+                                    break;
+                                case R.id.style_wang:
+                                    sign_pad.clear();
+                                    sign_pad.getMotionEventRecord().clear();
+                                    sign_pad.setPenstyle(2);
+
+                                    item.setChecked(true);
+
+                                    fullScreenDisplay();
+                                    break;
+                                case R.id.style_yan:
+                                    sign_pad.clear();
+                                    sign_pad.getMotionEventRecord().clear();
+                                    sign_pad.setPenstyle(5);
+
+                                    item.setChecked(true);
+
+                                    fullScreenDisplay();
+                                    break;
+                                case R.id.style_zhao:
+                                    sign_pad.clear();
+                                    sign_pad.getMotionEventRecord().clear();
+                                    sign_pad.setPenstyle(3);
+
+                                    item.setChecked(true);
+
+                                    fullScreenDisplay();
+                                    break;
+                                case R.id.style_zhong:
+                                    sign_pad.clear();
+                                    sign_pad.getMotionEventRecord().clear();
+                                    sign_pad.setPenstyle(4);
+
+                                    item.setChecked(true);
+
+                                    fullScreenDisplay();
+                                    break;
+                                default:
+                                    break;
+                            }
+                            return true;
+                        }
+                    });
+
+        }
+
+        // Reflect to invoke setForceShowIcon function to show menu icon.
+        // we may get IllegalAccessException: access to field not allowed here,
+        // but it's ok, we just catch it and ignore it.
+        try {
+            Field[] fields = popupMenu.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                if ("mPopup".equals(field.getName())) {
+                    field.setAccessible(true);
+                    Object menuPopupHelper = field.get(popupMenu);
+                    Class<?> classPopupHelper = Class.forName(menuPopupHelper
+                            .getClass().getName());
+                    Method setForceIcons = classPopupHelper.getMethod(
+                            "setForceShowIcon", boolean.class);
+                    setForceIcons.invoke(menuPopupHelper, true);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        MenuItem item = popupMenu.getMenu().findItem(R.id.style_fu);
+        popupMenu.show();
     }
 }

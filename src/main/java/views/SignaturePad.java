@@ -62,19 +62,23 @@ public class SignaturePad extends View {
     private static final int DOUBLE_CLICK_DELAY_MS = 200;
 
     //Default attribute values
-    private final int DEFAULT_ATTR_PEN_MIN_WIDTH_PX = 2;
-    private final int DEFAULT_ATTR_PEN_MAX_WIDTH_PX = 10;
-    private final int DEFAULT_ATTR_PEN_COLOR = Color.BLACK;
-    private final float DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT = 0.9f;
-    private final boolean DEFAULT_ATTR_CLEAR_ON_DOUBLE_CLICK = false;
-
+    private int DEFAULT_ATTR_PEN_MIN_WIDTH_PX = 2;
+    private int DEFAULT_ATTR_PEN_MAX_WIDTH_PX = 10;
+    private int DEFAULT_ATTR_PEN_COLOR = Color.BLACK;
+    private float DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT = 0.9f;
+    private  boolean DEFAULT_ATTR_CLEAR_ON_DOUBLE_CLICK = false;
+    //before are final
     private Paint mPaint = new Paint();
     private Bitmap mSignatureBitmap = null;
     private Canvas mSignatureBitmapCanvas = null;
 
+    private Context context2;
+    private AttributeSet attrs2;
+
     public SignaturePad(Context context, AttributeSet attrs) {
         super(context, attrs);
-
+        context2  = context;
+        attrs2 = attrs;
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.SignaturePad,
@@ -116,7 +120,105 @@ public class SignaturePad extends View {
             setPenColor(Color.parseColor("#000000"));
         }
     }
+    public void setPenstyle(int penstyle)
+    {
+        //Configurable parameters
+        TypedArray a = context2.getTheme().obtainStyledAttributes(
+                attrs2,
+                R.styleable.SignaturePad,
+                0, 0);
+        switch (penstyle){
+            case 1:
+                DEFAULT_ATTR_PEN_MIN_WIDTH_PX = 2;
+                DEFAULT_ATTR_PEN_MAX_WIDTH_PX = 10;
+                DEFAULT_ATTR_PEN_COLOR = Color.BLACK;
+                DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT = 0.9f;
+                try {
+                    mMinWidth = a.getDimensionPixelSize(R.styleable.SignaturePad_penMinWidth, convertDpToPx(DEFAULT_ATTR_PEN_MIN_WIDTH_PX));
+                    mMaxWidth = a.getDimensionPixelSize(R.styleable.SignaturePad_penMaxWidth, convertDpToPx(DEFAULT_ATTR_PEN_MAX_WIDTH_PX));
+                    mPaint.setColor(a.getColor(R.styleable.SignaturePad_penColor, DEFAULT_ATTR_PEN_COLOR));
+                    mVelocityFilterWeight = a.getFloat(R.styleable.SignaturePad_velocityFilterWeight, DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT);
+                    mClearOnDoubleClick = a.getBoolean(R.styleable.SignaturePad_clearOnDoubleClick, DEFAULT_ATTR_CLEAR_ON_DOUBLE_CLICK);
+                } finally {
+                    a.recycle();
+                }
+                break;
+            case 2:
+                DEFAULT_ATTR_PEN_MIN_WIDTH_PX = 4;
+                DEFAULT_ATTR_PEN_MAX_WIDTH_PX = 12;
+                DEFAULT_ATTR_PEN_COLOR = Color.BLACK;
+                DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT = 0.4f;
+                //Configurable parameters
 
+                try {
+                    mMinWidth = a.getDimensionPixelSize(R.styleable.SignaturePad_penMinWidth, convertDpToPx(DEFAULT_ATTR_PEN_MIN_WIDTH_PX));
+                    mMaxWidth = a.getDimensionPixelSize(R.styleable.SignaturePad_penMaxWidth, convertDpToPx(DEFAULT_ATTR_PEN_MAX_WIDTH_PX));
+                    mPaint.setColor(a.getColor(R.styleable.SignaturePad_penColor, DEFAULT_ATTR_PEN_COLOR));
+                    mVelocityFilterWeight = a.getFloat(R.styleable.SignaturePad_velocityFilterWeight, DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT);
+                    mClearOnDoubleClick = a.getBoolean(R.styleable.SignaturePad_clearOnDoubleClick, DEFAULT_ATTR_CLEAR_ON_DOUBLE_CLICK);
+                } finally {
+                    a.recycle();
+                }
+                break;
+            case 3:
+                DEFAULT_ATTR_PEN_MIN_WIDTH_PX = 5;
+                DEFAULT_ATTR_PEN_MAX_WIDTH_PX = 15;
+                DEFAULT_ATTR_PEN_COLOR = Color.BLACK;
+                DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT = 0.4f;
+                //Configurable parameters
+
+                try {
+                    mMinWidth = a.getDimensionPixelSize(R.styleable.SignaturePad_penMinWidth, convertDpToPx(DEFAULT_ATTR_PEN_MIN_WIDTH_PX));
+                    mMaxWidth = a.getDimensionPixelSize(R.styleable.SignaturePad_penMaxWidth, convertDpToPx(DEFAULT_ATTR_PEN_MAX_WIDTH_PX));
+                    mPaint.setColor(a.getColor(R.styleable.SignaturePad_penColor, DEFAULT_ATTR_PEN_COLOR));
+                    mVelocityFilterWeight = a.getFloat(R.styleable.SignaturePad_velocityFilterWeight, DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT);
+                    mClearOnDoubleClick = a.getBoolean(R.styleable.SignaturePad_clearOnDoubleClick, DEFAULT_ATTR_CLEAR_ON_DOUBLE_CLICK);
+                } finally {
+                    a.recycle();
+                }
+                break;
+            case 4:
+                DEFAULT_ATTR_PEN_MIN_WIDTH_PX = 6;
+                DEFAULT_ATTR_PEN_MAX_WIDTH_PX = 10;
+                DEFAULT_ATTR_PEN_COLOR = Color.BLACK;
+                DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT = 0.9f;
+                //Configurable parameters
+
+                try {
+                    mMinWidth = a.getDimensionPixelSize(R.styleable.SignaturePad_penMinWidth, convertDpToPx(DEFAULT_ATTR_PEN_MIN_WIDTH_PX));
+                    mMaxWidth = a.getDimensionPixelSize(R.styleable.SignaturePad_penMaxWidth, convertDpToPx(DEFAULT_ATTR_PEN_MAX_WIDTH_PX));
+                    mPaint.setColor(a.getColor(R.styleable.SignaturePad_penColor, DEFAULT_ATTR_PEN_COLOR));
+                    mVelocityFilterWeight = a.getFloat(R.styleable.SignaturePad_velocityFilterWeight, DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT);
+                    mClearOnDoubleClick = a.getBoolean(R.styleable.SignaturePad_clearOnDoubleClick, DEFAULT_ATTR_CLEAR_ON_DOUBLE_CLICK);
+                } finally {
+                    a.recycle();
+                }
+                break;
+            case 5:
+                DEFAULT_ATTR_PEN_MIN_WIDTH_PX = 12;
+                DEFAULT_ATTR_PEN_MAX_WIDTH_PX = 18;
+                DEFAULT_ATTR_PEN_COLOR = Color.BLACK;
+                DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT = 0.8f;
+                //Configurable parameters
+
+                try {
+                    mMinWidth = a.getDimensionPixelSize(R.styleable.SignaturePad_penMinWidth, convertDpToPx(DEFAULT_ATTR_PEN_MIN_WIDTH_PX));
+                    mMaxWidth = a.getDimensionPixelSize(R.styleable.SignaturePad_penMaxWidth, convertDpToPx(DEFAULT_ATTR_PEN_MAX_WIDTH_PX));
+                    mPaint.setColor(a.getColor(R.styleable.SignaturePad_penColor, DEFAULT_ATTR_PEN_COLOR));
+                    mVelocityFilterWeight = a.getFloat(R.styleable.SignaturePad_velocityFilterWeight, DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT);
+                    mClearOnDoubleClick = a.getBoolean(R.styleable.SignaturePad_clearOnDoubleClick, DEFAULT_ATTR_CLEAR_ON_DOUBLE_CLICK);
+                } finally {
+                    a.recycle();
+                }
+                break;
+            default:
+                DEFAULT_ATTR_PEN_MIN_WIDTH_PX = 2;
+                DEFAULT_ATTR_PEN_MAX_WIDTH_PX = 10;
+                DEFAULT_ATTR_PEN_COLOR = Color.BLACK;
+                DEFAULT_ATTR_VELOCITY_FILTER_WEIGHT = 0.9f;
+                break;
+        }
+    }
     /**
      * Set the pen color from a given color.
      *
