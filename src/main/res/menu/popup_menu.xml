@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <group android:checkableBehavior="single">
+
+        <item
+        android:id="@+id/style_fu"
+        android:title="傅青主草书笔锋"
+        android:textColor="@android:color/holo_orange_dark"
+        android:checked="true"
+        />
+    <item
+        android:id="@+id/style_wang"
+        android:textColor="@android:color/holo_orange_dark"
+        android:title="王羲之行书笔锋"/>
+    <item
+        android:id="@+id/style_zhao"
+        android:textColor="@android:color/holo_orange_dark"
+        android:title="赵孟頫楷书笔锋"/>
+    <item
+        android:id="@+id/style_zhong"
+        android:textColor="@android:color/holo_orange_dark"
+        android:title="钟繇小楷笔锋"/>
+    <item
+        android:id="@+id/style_yan"
+        android:textColor="@android:color/holo_orange_dark"
+        android:title="颜真卿大楷笔锋"/>
+    </group>
+
+    
+</menu>
